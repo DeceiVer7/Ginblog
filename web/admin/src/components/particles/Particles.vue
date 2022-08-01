@@ -12,7 +12,8 @@ export default {
     require('./particles')
     // eslint-disable-next-line no-undef
     particlesJS('particles', particlesJson)
-  }
+  },
+  name: 'particles'
 }
 </script>
 
@@ -21,7 +22,7 @@ export default {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: #282c34;
+  background-color: #003472;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 50% 50%;
