@@ -1,9 +1,10 @@
 package routes
 
 import (
-	"ginblog/api/v1"
+	v1 "ginblog/api/v1"
 	"ginblog/middleware"
 	"ginblog/utils"
+
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
 )
@@ -22,7 +23,7 @@ func InitRouter() {
 	r.Use(middleware.Log())
 	r.Use(gin.Recovery())
 	r.Use(middleware.Cors())
-	
+
 	r.Static("/static", "./web/front/dist/static")
 	r.Static("/admin", "./web/admin/dist")
 	r.StaticFile("/favicon.ico", "/web/front/dist/favicon.ico")
@@ -34,10 +35,10 @@ func InitRouter() {
 	r.GET("/admin", func(c *gin.Context) {
 		c.HTML(200, "admin", nil)
 	})
-	
+
 	/*
-	后台管理路由接口
-	 */
+		后台管理路由接口
+	*/
 	auth := r.Group("api/v1")
 	auth.Use(middleware.JwtToken())
 	{
@@ -45,7 +46,7 @@ func InitRouter() {
 		auth.GET("admin/users", v1.GetUsers)
 		auth.PUT("user/:id", v1.EditUser)
 		auth.DELETE("user/:id", v1.DeleteUser)
-		    //修改密码
+		//修改密码
 		auth.PUT("admin/changepw/:id", v1.ChangeUserPassword)
 		// 分类模块的路由接口
 		auth.GET("admin/category", v1.GetCate)
@@ -69,10 +70,10 @@ func InitRouter() {
 		auth.PUT("checkcomment/:id", v1.CheckComment)
 		auth.PUT("uncheckcomment/:id", v1.UncheckComment)
 	}
-	
+
 	/*
-	前端展示页面接口
-	 */
+		前端展示页面接口
+	*/
 	router := r.Group("api/v1")
 	{
 		// 用户信息模块

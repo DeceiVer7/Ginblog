@@ -10,6 +10,8 @@
             <a-form-model-item label="文章标题" prop="title">
               <a-input style="width: 300px" v-model="artInfo.title"></a-input>
             </a-form-model-item>
+            <!-- <a-form-model-item prop="author" v-model="artInfo.author">
+            </a-form-model-item> -->
             <a-form-model-item label="文章描述" prop="desc">
               <a-input type="textarea" v-model="artInfo.desc"></a-input>
             </a-form-model-item>
@@ -68,6 +70,7 @@ export default {
       artInfo: {
         id: 0,
         title: '',
+        author:'',
         cid: undefined,
         desc: '',
         content: '',
@@ -75,7 +78,9 @@ export default {
       },
       Catelist: [],
       upUrl: Url + 'upload',
-      headers: {},
+      headers: {
+        Authorization: ''
+      },
       fileList: [],
       artInfoRules: {
         title: [{ required: true, message: '请输入文章标题', trigger: 'change' }],
@@ -91,7 +96,10 @@ export default {
   },
   mounted() {
     this.getCateList()
-    this.headers = { Authorization: `Bearer ${window.sessionStorage.getItem('token')}` }
+    this.headers = { 
+      Authorization: `Bearer ${window.sessionStorage.getItem('token')}`,
+    },
+    this.artInfo.author = window.sessionStorage.getItem('username') 
     if (this.id) {
       this.getArtInfo(this.id)
     }
@@ -146,7 +154,6 @@ export default {
         } else {
           const { data: res } = await this.$http.put(`article/${id}`, this.artInfo)
           if (res.status !== 200) return this.$message.error(res.message)
-
           this.$router.push('/artlist')
           this.$message.success('更新文章成功')
         }

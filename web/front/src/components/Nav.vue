@@ -6,7 +6,7 @@
           <v-avatar size="130" color="grey">
             <img :src="profileInfo.avatar" alt />
           </v-avatar>
-          <div class="ma-4 white--text">{{profileInfo.name}}</div>
+          <div class="ma-4 white--text">{{profileInfo.username}}</div>
         </v-col>
       </v-card-title>
       <v-divider></v-divider>
@@ -57,21 +57,23 @@
 </template>
 <script>
 export default {
+  props: ['id'],
   data() {
     return {
       profileInfo: {
-        id: 1
+        id: 0
       }
     }
   },
   created() {
-    this.getProfileInfo()
+    this.id = window.sessionStorage.getItem('user_id')
+    this.getProfileInfo(this.id)
   },
   methods: {
     // 获取个人设置
-    async getProfileInfo() {
+    async getProfileInfo(id) {
       const { data: res } = await this.$http.get(
-        `profile/${this.profileInfo.id}`
+        `profile/${id}`
       )
       this.profileInfo = res.data
       this.$root.$emit('msg', res.data.icp_record)

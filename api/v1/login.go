@@ -4,13 +4,14 @@ import (
 	"ginblog/middleware"
 	"ginblog/model"
 	"ginblog/utils/errmsg"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
-// Login 后台登陆
+// Login 后台登录
 func Login(c *gin.Context) {
 	var formData model.User
 	_ = c.ShouldBindJSON(&formData)
@@ -37,16 +38,22 @@ func Login(c *gin.Context) {
 func LoginFront(c *gin.Context) {
 	var formData model.User
 	_ = c.ShouldBindJSON(&formData)
+	var token string
 	var code int
 
 	formData, code = model.CheckLoginFront(formData.Username, formData.Password)
 
-	c.JSON(http.StatusOK, gin.H{
-		"status":  code,
-		"data":    formData.Username,
-		"id":      formData.ID,
-		"message": errmsg.GetErrMsg(code),
-	})
+	if code == errmsg.SUCCSE {
+		setToken(c, formData)
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  code,
+			"data":    formData.Username,
+			"id":      formData.ID,
+			"message": errmsg.GetErrMsg(code),
+			"token":   token,
+		})
+	}
 }
 
 // token生成函数
@@ -78,5 +85,4 @@ func setToken(c *gin.Context, user model.User) {
 		"message": errmsg.GetErrMsg(200),
 		"token":   token,
 	})
-	return
 }

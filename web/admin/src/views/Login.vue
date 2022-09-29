@@ -1,5 +1,7 @@
 <template>
   <div class="container">
+    <particles></particles>
+    <nav id="Title">Simplicity博客管理页面</nav>
     <div class="loginBox">
       <a-form-model ref="loginFormRef" :rules="rules" :model="formdata" class="loginForm">
         <a-form-model-item prop="username">
@@ -29,7 +31,9 @@
 </template>
 
 <script>
+import particles from '@/components/particles/Particles.vue'
 export default {
+  components: { particles },
   data() {
     return {
       formdata: {
@@ -78,7 +82,7 @@ export default {
 <style scoped>
 .container {
   height: 100%;
-  background-color: #282c34;
+  background-color: #003472;
 }
 
 .loginBox {
@@ -87,7 +91,7 @@ export default {
   background-color: #fff;
   position: absolute;
   top: 50%;
-  left: 70%;
+  left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 9px;
 }
@@ -103,5 +107,14 @@ export default {
 .loginBtn {
   display: flex;
   justify-content: flex-end;
+}
+#Title {
+  color: #fff;
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 60px;
 }
 </style>

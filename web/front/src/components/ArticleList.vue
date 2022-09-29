@@ -24,6 +24,10 @@
         <v-divider class="mx-4"></v-divider>
         <v-card-text class="d-flex align-center">
           <div class="d-flex align-center">
+            <v-icon class="mr-1" small>{{ 'mdi-account-edit' }}</v-icon>
+            <span>{{ item.author }}</span>
+          </div>
+          <div class="mx-4 d-flex align-center">
             <v-icon class="mr-1" small>{{ 'mdi-calendar-month' }}</v-icon>
             <span>{{ item.CreatedAt | dateformat('YYYY-MM-DD') }}</span>
           </div>

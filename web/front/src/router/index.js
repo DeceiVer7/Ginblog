@@ -9,6 +9,8 @@ const Category = () =>
   import(/* webpackChunkName: "group-category" */ '../components/CateList.vue')
 const Search = () =>
   import(/* webpackChunkName: "group-search" */ '../components/Search.vue')
+const AddArt = () =>
+  import(/* webpackChunkName: "group-addart" */ '../components/AddArt.vue')
 
 Vue.use(VueRouter)
 
@@ -37,6 +39,12 @@ const routes = [
     path: '/search/:title',
     component: Search,
     meta: { title: '搜索结果' },
+    props: true
+  },
+  {
+    path: '/addart',
+    component: AddArt,
+    meta: { title: '写文章' },
     props: true
   }
 ]

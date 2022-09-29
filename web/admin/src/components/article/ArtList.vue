@@ -11,10 +11,7 @@
             @search="getArtList"
           />
         </a-col>
-        <a-col :span="4">
-          <a-button type="primary" @click="$router.push('/addart')">新增</a-button>
-        </a-col>
-
+        
         <a-col :span="3">
           <a-select placeholder="请选择分类" style="width: 200px" @change="CateChange">
             <a-select-option

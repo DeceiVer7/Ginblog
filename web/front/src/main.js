@@ -5,6 +5,8 @@ import vuetify from './plugins/vuetify'
 import day from 'dayjs'
 
 import './plugins/http'
+import './plugins/antui'
+import './assets/style.css'
 
 Vue.filter('dateformat', function(indate, outdate) {
   return day(indate).format(outdate)

@@ -2,6 +2,7 @@ package model
 
 import (
 	"ginblog/utils/errmsg"
+
 	"gorm.io/gorm"
 )
 
@@ -9,6 +10,7 @@ type Article struct {
 	Category Category `gorm:"foreignkey:Cid"`
 	gorm.Model
 	Title        string `gorm:"type:varchar(100);not null" json:"title"`
+	Author       string `gorm:"type:varchar(100);not null" json:"author"`
 	Cid          int    `gorm:"type:int;not null" json:"cid"`
 	Desc         string `gorm:"type:varchar(200)" json:"desc"`
 	Content      string `gorm:"type:longtext" json:"content"`
@@ -57,7 +59,7 @@ func GetArt(pageSize int, pageNum int) ([]Article, int, int64) {
 	var err error
 	var total int64
 
-	err = db.Select("article.id, title, img, created_at, updated_at, `desc`, comment_count, read_count, category.name").Limit(pageSize).Offset((pageNum - 1) * pageSize).Order("Created_At DESC").Joins("Category").Find(&articleList).Error
+	err = db.Select("article.id, title, author, img, created_at, updated_at, `desc`, comment_count, read_count, category.name").Limit(pageSize).Offset((pageNum - 1) * pageSize).Order("Created_At DESC").Joins("Category").Find(&articleList).Error
 	// 单独计数
 	db.Model(&articleList).Count(&total)
 	if err != nil {
@@ -72,7 +74,7 @@ func SearchArticle(title string, pageSize int, pageNum int) ([]Article, int, int
 	var articleList []Article
 	var err error
 	var total int64
-	err = db.Select("article.id,title, img, created_at, updated_at, `desc`, comment_count, read_count, Category.name").Order("Created_At DESC").Joins("Category").Where("title LIKE ?",
+	err = db.Select("article.id, title, author, img, created_at, updated_at, `desc`, comment_count, read_count, Category.name").Order("Created_At DESC").Joins("Category").Where("title LIKE ?",
 		title+"%",
 	).Limit(pageSize).Offset((pageNum - 1) * pageSize).Find(&articleList).Error
 	//单独计数
