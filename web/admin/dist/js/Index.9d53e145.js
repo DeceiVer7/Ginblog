@@ -1,0 +1,2 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["Index"],{adf4:function(e,n,t){"use strict";t.r(n);var c=function(){var e=this,n=e.$createElement;e._self._c;return e._m(0)},i=[function(){var e=this,n=e.$createElement,t=e._self._c||n;return t("div",[t("h3",[e._v("欢迎来到Simplicity后台管理页面")])])}],l=t("2877"),r={},u=Object(l["a"])(r,c,i,!1,null,null,null);n["default"]=u.exports}}]);
+//# sourceMappingURL=Index.9d53e145.js.map
