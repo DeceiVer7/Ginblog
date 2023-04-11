@@ -1,14 +1,18 @@
 <template>
   <div>
     <v-app-bar mobileBreakpoint="sm" app dark flat color="indigo darken-2">
-      <v-app-bar-nav-icon dark class="hidden-md-and-up" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>
+      <v-app-bar-nav-icon
+        dark
+        class="hidden-md-and-up"
+        @click.stop="drawer = !drawer"
+      ></v-app-bar-nav-icon>
+      <!-- <v-toolbar-title>
         <v-app-bar-nav-icon class="mx-10 hidden-md-and-down">
           <v-avatar size="40" color="grey">
             <img src="../assets/logo.png" alt />
           </v-avatar>
         </v-app-bar-nav-icon>
-      </v-toolbar-title>
+      </v-toolbar-title> -->
 
       <v-tabs dark center-active centered class="hidden-sm-and-down">
         <v-tab @click="$router.push('/')">首页</v-tab>
@@ -17,11 +21,41 @@
           :key="item.id"
           text
           @click="gotoCate(item.id)"
-        >{{ item.name }}</v-tab>
+          >{{ item.name }}</v-tab
+        >
       </v-tabs>
 
       <v-spacer></v-spacer>
       <v-btn @click="$router.push('/addart')" text dark>写文章</v-btn>
+
+      <v-menu open-on-hover offsetY>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn v-bind="attrs" v-on="on" text dark>
+            我的
+          </v-btn>
+        </template>
+
+        <v-list>
+            <!-- <v-list-item-title @click="$router.push('/artlist')">文章管理</v-list-item-title> -->
+          <v-list-item link>
+            <v-list-item-title
+              @click="$router.push(`/artlist/${headers.username}`)"
+              >文章管理</v-list-item-title
+            >
+          </v-list-item>
+          <v-list-item link>
+            <v-list-item-title @click="$router.push('/profile')"
+              >个人信息</v-list-item-title
+            >
+          </v-list-item>
+          <v-list-item link>
+            <v-list-item-title @click="$router.push('/')"
+              >我的点赞</v-list-item-title
+            >
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
       <v-responsive class="hidden-sm-and-down" color="white">
         <v-text-field
           dense
@@ -38,9 +72,20 @@
       </v-responsive>
       <v-dialog max-width="800">
         <template v-slot:activator="{ on, attrs }">
-          <v-btn v-if="!headers.username" text dark v-bind="attrs" v-on="on">请登录</v-btn>
-          <v-btn v-if="headers.username" text dark>欢迎你{{ headers.username }}</v-btn>
-          <v-btn class="hidden-md-and-down" v-if="headers.username" text dark @click="loginout">退出</v-btn>
+          <v-btn v-if="!headers.username" text dark v-bind="attrs" v-on="on"
+            >请登录</v-btn
+          >
+          <v-btn v-if="headers.username" text dark
+            >欢迎你{{ headers.username }}</v-btn
+          >
+          <v-btn
+            class="hidden-md-and-down"
+            v-if="headers.username"
+            text
+            dark
+            @click="loginout"
+            >退出</v-btn
+          >
         </template>
 
         <template v-slot:default="dialog">
@@ -75,7 +120,9 @@
 
       <v-dialog max-width="800">
         <template v-slot:activator="{ on, attrs }">
-          <v-btn v-if="!headers.username" text dark v-bind="attrs" v-on="on">注册</v-btn>
+          <v-btn v-if="!headers.username" text dark v-bind="attrs" v-on="on"
+            >注册</v-btn
+          >
         </template>
         <template v-slot:default="dialog">
           <v-form ref="registerformRef" v-model="registerformvalid">
@@ -160,21 +207,21 @@ export default {
         username: ''
       },
       nameRules: [
-        (v) => !!v || '用户名不能为空',
-        (v) =>
+        v => !!v || '用户名不能为空',
+        v =>
           (v && v.length >= 4 && v.length <= 12) ||
           '用户名必须在4到12个字符之间'
       ],
       passwordRules: [
-        (v) => !!v || '密码不能为空',
-        (v) =>
+        v => !!v || '密码不能为空',
+        v =>
           (v && v.length >= 6 && v.length <= 20) || '密码必须在6到20个字符之间'
       ],
       checkPasswordRules: [
-        (v) => !!v || '密码不能为空',
-        (v) =>
+        v => !!v || '密码不能为空',
+        v =>
           (v && v.length >= 6 && v.length <= 20) || '密码必须在6到20个字符之间',
-        (v) => v === this.formdata.password || '密码两次输入不一致，请检查'
+        v => v === this.formdata.password || '密码两次输入不一致，请检查'
       ]
     }
   },
@@ -206,7 +253,7 @@ export default {
     },
 
     gotoCate(cid) {
-      this.$router.push(`/category/${cid}`).catch((err) => err)
+      this.$router.push(`/category/${cid}`).catch(err => err)
     },
     // 登录
     async login() {
@@ -221,7 +268,7 @@ export default {
       setTimeout(() => {
         this.$router.push('/')
         this.$router.go(0)
-      }, 300);
+      }, 300)
     },
 
     // 退出
@@ -232,7 +279,7 @@ export default {
       setTimeout(() => {
         this.$router.push('/')
         this.$router.go(0)
-      }, 300);
+      }, 300)
     },
 
     // 注册
@@ -249,7 +296,7 @@ export default {
       setTimeout(() => {
         this.$router.push('/')
         this.$router.go(0)
-      }, 300);
+      }, 300)
     }
   }
 }

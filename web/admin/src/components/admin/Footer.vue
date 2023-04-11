@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    <span>---- GinBlog Admin ----</span>
+    <span>---- Simplicity个人博客系统 后台管理界面 ----</span>
   </div>
 </template>
 

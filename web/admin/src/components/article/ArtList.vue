@@ -13,7 +13,7 @@
         </a-col>
         
         <a-col :span="3">
-          <a-select placeholder="请选择分类" style="width: 200px" @change="CateChange">
+          <a-select placeholder="请选择标签" style="width: 200px" @change="CateChange">
             <a-select-option
               v-for="item in Catelist"
               :key="item.id"
@@ -65,27 +65,17 @@ import day from 'dayjs'
 
 const columns = [
   {
-    title: 'ID',
-    dataIndex: 'ID',
-    width: '5%',
-    key: 'id',
-    align: 'center',
-  },
-  {
-    title: '更新日期',
-    dataIndex: 'UpdatedAt',
-    width: '10%',
-    key: 'UpdatedAt',
-    align: 'center',
-    customRender: (val) => {
-      return val ? day(val).format('YYYY年MM月DD日 HH:mm') : '暂无'
-    },
-  },
-  {
-    title: '分类',
+    title: '标签',
     dataIndex: 'Category.name',
-    width: '5%',
+    width: '6%',
     key: 'name',
+    align: 'center',
+  },
+  {
+    title: '作者',
+    dataIndex: 'author',
+    width: '8%',
+    key: 'author',
     align: 'center',
   },
   {
@@ -101,6 +91,16 @@ const columns = [
     width: '20%',
     key: 'desc',
     align: 'center',
+  },
+  {
+    title: '更新日期',
+    dataIndex: 'UpdatedAt',
+    width: '10%',
+    key: 'UpdatedAt',
+    align: 'center',
+    customRender: (val) => {
+      return val ? day(val).format('YYYY年MM月DD日 HH:mm') : '暂无'
+    },
   },
   {
     title: '缩略图',
@@ -164,7 +164,7 @@ export default {
       this.Artlist = res.data
       this.pagination.total = res.total
     },
-    // 获取分类
+    // 获取标签
     async getCateList() {
       const { data: res } = await this.$http.get('category')
       if (res.status !== 200) return this.$message.error(res.message)
@@ -202,7 +202,7 @@ export default {
         },
       })
     },
-    // 查询分类下的文章
+    // 查询标签下的文章
     CateChange(value) {
       this.getCateArt(value)
     },

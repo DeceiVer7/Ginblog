@@ -11,12 +11,13 @@ const CateList = () => import(/* webpackChunkName: "CateList" */ '../components/
 const UserList = () => import(/* webpackChunkName: "UserList" */ '../components/user/UserList.vue')
 const Profile = () => import(/* webpackChunkName: "UserList" */ '../components/user/Profile.vue')
 const CommentList = () => import(/* webpackChunkName: "UserList" */ '../components/comment/commentList.vue')
+const LogSystem = () => import(/* webpackChunkName: "LogSystem" */ '../components/logsystem/LogSystem.vue')
 
 // 路由重复点击捕获错误
 const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location, onResolve, onReject) {
   if (onResolve || onReject) return originalPush.call(this, location, onResolve, onReject)
-  return originalPush.call(this, location).catch(err => err)
+  return originalPush.call(this, location).catch((err) => err)
 }
 
 Vue.use(VueRouter)
@@ -26,15 +27,15 @@ const routes = [
     path: '/login',
     name: 'login',
     meta: {
-      title: '请登录'
+      title: '请登录',
     },
-    component: Login
+    component: Login,
   },
   {
     path: '/',
     name: 'admin',
     meta: {
-      title: 'GinBlog 后台管理页面'
+      title: 'GinBlog 后台管理页面',
     },
     component: Admin,
     children: [
@@ -42,69 +43,75 @@ const routes = [
         path: 'index',
         component: Index,
         meta: {
-          title: 'GinBlog 后台管理页面'
-        }
+          title: 'GinBlog 后台管理页面',
+        },
       },
       {
         path: 'addart',
         component: AddArt,
         meta: {
-          title: '新增文章'
-        }
+          title: '新增文章',
+        },
       },
       {
         path: 'addart/:id',
         component: AddArt,
         meta: {
-          title: '编辑文章'
+          title: '编辑文章',
         },
-        props: true
+        props: true,
       },
       {
         path: 'artlist',
         component: ArtList,
         meta: {
-          title: '文章列表'
-        }
+          title: '文章列表',
+        },
       },
       {
         path: 'catelist',
         component: CateList,
         meta: {
-          title: '分类列表'
-        }
+          title: '分类列表',
+        },
       },
       {
         path: 'userlist',
         component: UserList,
         meta: {
-          title: '用户列表'
-        }
+          title: '用户列表',
+        },
       },
       {
         path: 'profile',
         component: Profile,
         meta: {
-          title: '个人设置'
-        }
+          title: '个人设置',
+        },
       },
       {
         path: 'commentlist',
         component: CommentList,
         meta: {
-          title: '评论管理'
-        }
+          title: '评论管理',  
+        },
+      },
+      {
+        path: 'logsystem',
+        component: LogSystem,
+        meta: {
+          title: '日志系统',
+        },
       }
-    ]
-  }
+    ],
+  },
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
 })
 
 router.beforeEach((to, from, next) => {
-
   if (to.meta.title) {
     document.title = to.meta.title
   }

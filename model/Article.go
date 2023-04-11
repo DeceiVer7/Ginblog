@@ -69,6 +69,41 @@ func GetArt(pageSize int, pageNum int) ([]Article, int, int64) {
 
 }
 
+// GetArtByAuthor 根据作者名查询文章列表
+func GetArtByAuthor(pageSize int, pageNum int, author string) ([]Article, int, int64) {
+	var articleListByAuthor []Article
+	var err error
+	var total int64
+
+	err = db.Select("article.id, title, author, img, created_at, updated_at, `desc`, comment_count, read_count, category.name").
+		Limit(pageSize).Offset((pageNum-1)*pageSize).Order("created_at DESC").
+		Joins("Category").Where("author = ?", author).
+		Find(&articleListByAuthor).Error
+
+	db.Model(&Article{}).Where("author = ?", author).Count(&total)
+
+	if err != nil {
+		return nil, errmsg.ERROR, 0
+	}
+	return articleListByAuthor, errmsg.SUCCSE, total
+}
+
+// func GetArtByAuthor(author string, pageSize int, pageNum int) ([]Article, int, int64) {
+// 	var articleListByAuthor []Article
+// 	var err error
+// 	var total int64
+
+// 	err = db.Select("article.id, title, author, img, created_at, updated_at, `desc`, comment_count, read_count, category.name").Limit(pageSize).Offset((pageNum-1)*pageSize).Order("Created_At DESC").Joins("Category").Where("author LIKE ?",
+// 		author).Find(&articleListByAuthor).Error
+// 	// 单独计数
+// 	db.Model(&articleListByAuthor).Count(&total)
+// 	if err != nil {
+// 		return nil, errmsg.ERROR, 0
+// 	}
+// 	return articleListByAuthor, errmsg.SUCCSE, total
+
+// }
+
 // SearchArticle 搜索文章标题
 func SearchArticle(title string, pageSize int, pageNum int) ([]Article, int, int64) {
 	var articleList []Article

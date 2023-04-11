@@ -19,8 +19,8 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
-            <a-form-model-item label="文章分类" prop="cid">
-              <a-select style="width: 200px" v-model="artInfo.cid" placeholder="请选择分类"
+            <!-- <a-form-model-item label="文章标签" prop="cid">
+              <a-select style="width: 200px" v-model="artInfo.cid" placeholder="请选择标签"
                 @change="cateChange">
                 <a-select-option v-for="item in Catelist" :key="item.id" :value="item.id">
                   {{
@@ -28,7 +28,7 @@
                   }}
                 </a-select-option>
               </a-select>
-            </a-form-model-item>
+            </a-form-model-item> -->
             <a-form-model-item label="文章缩略图" prop="img">
               <a-upload
                 listType="picture"
@@ -93,7 +93,7 @@ export default {
         title: [
           { required: true, message: '请输入文章标题', trigger: 'change' }
         ],
-        cid: [{ required: true, message: '请选择文章分类', trigger: 'change' }],
+        cid: [{ required: true, message: '请选择文章标签', trigger: 'change' }],
         desc: [
           { required: true, message: '请输入文章描述', trigger: 'change' },
           { max: 120, message: '描述最多可写120个字符', trigger: 'change' }
@@ -133,13 +133,13 @@ export default {
       this.artInfo = res.data
       this.artInfo.id = res.data.ID
     },
-    // 获取分类列表
+    // 获取标签列表
     async getCateList() {
       const { data: res } = await this.$http.get('admin/category')
       if (res.status !== 200) return this.$message.error(res.message)
       this.Catelist = res.data
     },
-    // 选择分类
+    // 选择标签
     cateChange(value) {
       this.artInfo.cid = value
     },
@@ -180,7 +180,7 @@ export default {
     },
 
     addCancel() {
-      this.$refs.artInfoRef.resetFields()
+      this.$router.push('/artlist')
     }
   }
 }

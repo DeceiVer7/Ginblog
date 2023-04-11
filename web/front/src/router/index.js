@@ -11,6 +11,10 @@ const Search = () =>
   import(/* webpackChunkName: "group-search" */ '../components/Search.vue')
 const AddArt = () =>
   import(/* webpackChunkName: "group-addart" */ '../components/AddArt.vue')
+const ArtList = () =>
+  import(/* webpackChunkName: "group-artlist" */ '../components/ArtList.vue')
+const Profile = () =>
+  import(/* webpackChunkName: "group-profile" */ '../components/Profile.vue')
 
 Vue.use(VueRouter)
 
@@ -46,11 +50,30 @@ const routes = [
     component: AddArt,
     meta: { title: '写文章' },
     props: true
+  },
+  {
+    path: '/addart/:id',
+    component: AddArt,
+    meta: { title: '编辑文章' },
+    props: true
+  },
+  {
+    path: '/artlist/:author',
+    name: 'Artlist',
+    component: ArtList,
+    meta: { title: '文章管理' },
+    props: true
+  },
+  {
+    path: '/profile',
+    component: Profile,
+    meta: { title: '个人信息' },
+    props: true
   }
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes
 })

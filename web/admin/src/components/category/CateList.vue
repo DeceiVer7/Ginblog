@@ -3,7 +3,7 @@
     <a-card>
       <a-row :gutter="20">
         <a-col :span="4">
-          <a-button type="primary" @click="addCateVisible = true">新增分类</a-button>
+          <a-button type="primary" @click="addCateVisible = true">新增标签</a-button>
         </a-col>
       </a-row>
 
@@ -26,10 +26,10 @@
       </a-table>
     </a-card>
 
-    <!-- 新增分类区域 -->
+    <!-- 新增标签区域 -->
     <a-modal
       closable
-      title="新增分类"
+      title="新增标签"
       :visible="addCateVisible"
       width="60%"
       @ok="addCateOk"
@@ -37,24 +37,24 @@
       destroyOnClose
     >
       <a-form-model :model="newCate" :rules="addCateRules" ref="addCateRef">
-        <a-form-model-item label="分类名称" prop="name">
+        <a-form-model-item label="标签名称" prop="name">
           <a-input v-model="newCate.name"></a-input>
         </a-form-model-item>
       </a-form-model>
     </a-modal>
 
-    <!-- 编辑分类区域 -->
+    <!-- 编辑标签区域 -->
     <a-modal
       closable
       destroyOnClose
-      title="编辑分类"
+      title="编辑标签"
       :visible="editCateVisible"
       width="60%"
       @ok="editCateOk"
       @cancel="editCateCancel"
     >
       <a-form-model :model="CateInfo" :rules="CateRules" ref="addCateRef">
-        <a-form-model-item label="分类名称" prop="name">
+        <a-form-model-item label="标签名称" prop="name">
           <a-input v-model="CateInfo.name"></a-input>
         </a-form-model-item>
       </a-form-model>
@@ -72,7 +72,7 @@ const columns = [
     align: 'center',
   },
   {
-    title: '分类名',
+    title: '标签名',
     dataIndex: 'name',
     width: '20%',
     key: 'name',
@@ -116,7 +116,7 @@ export default {
           {
             validator: (rule, value, callback) => {
               if (this.CateInfo.name === '') {
-                callback(new Error('请输入分类名'))
+                callback(new Error('请输入标签名'))
               } else {
                 callback()
               }
@@ -130,7 +130,7 @@ export default {
           {
             validator: (rule, value, callback) => {
               if (this.newCate.name === '') {
-                callback(new Error('请输入分类名'))
+                callback(new Error('请输入标签名'))
               } else {
                 callback()
               }
@@ -147,7 +147,7 @@ export default {
     this.getCateList()
   },
   methods: {
-    // 获取分类列表
+    // 获取标签列表
     async getCateList() {
       const { data: res } = await this.$http.get('admin/category', {
         pagesize: this.queryParam.pagesize,
@@ -179,11 +179,11 @@ export default {
       this.pagination = pager
       this.getCateList()
     },
-    // 删除分类
+    // 删除标签
     deleteCate(id) {
       this.$confirm({
         title: '提示：请再次确认',
-        content: '确定要删除该分类吗？一旦删除，无法恢复',
+        content: '确定要删除该标签吗？一旦删除，无法恢复',
         onOk: async () => {
           const { data: res } = await this.$http.delete(`category/${id}`)
           if (res.status != 200) return this.$message.error(res.message)
@@ -195,7 +195,7 @@ export default {
         },
       })
     },
-    // 新增分类
+    // 新增标签
     addCateOk() {
       this.$refs.addCateRef.validate(async (valid) => {
         if (!valid) return this.$message.error('参数不符合要求，请重新输入')
@@ -205,16 +205,16 @@ export default {
         if (res.status != 200) return this.$message.error(res.message)
         this.$refs.addCateRef.resetFields()
         this.addCateVisible = false
-        this.$message.success('添加分类成功')
+        this.$message.success('添加标签成功')
         await this.getCateList()
       })
     },
     addCateCancel() {
       this.$refs.addCateRef.resetFields()
       this.addCateVisible = false
-      this.$message.info('新增分类已取消')
+      this.$message.info('新增标签已取消')
     },
-    // 编辑分类
+    // 编辑标签
     async editCate(id) {
       this.editCateVisible = true
       const { data: res } = await this.$http.get(`category/${id}`)
@@ -229,7 +229,7 @@ export default {
         })
         if (res.status != 200) return this.$message.error(res.message)
         this.editCateVisible = false
-        this.$message.success('更新分类信息成功')
+        this.$message.success('更新标签信息成功')
         this.getCateList()
       })
     },

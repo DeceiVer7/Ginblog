@@ -10,16 +10,12 @@
         <span>仪表盘</span>
       </a-menu-item>
 
-        <!-- <a-menu-item key="addart">
-          <a-icon type="form" />
-          <span>写文章</span>
-        </a-menu-item> -->
         <a-menu-item key="artlist">
           <a-icon type="snippets" />
           <span>文章管理</span>
         </a-menu-item>
       
-      <a-sub-menu>
+      <!-- <a-sub-menu>
         <span slot="title">
           <a-icon type="file" />
           <span>内容审核</span>
@@ -28,25 +24,28 @@
           <a-icon type="snippets" />
           <span>文章审核</span>
         </a-menu-item>
-        <a-menu-item key="commentlist">
-          <a-icon type="message" />
-          <span>评论审核</span>
-        </a-menu-item>
-      </a-sub-menu>
+      </a-sub-menu> -->
+
+      <a-menu-item key="commentlist">
+        <a-icon type="message" />
+        <span>评论审核</span>
+      </a-menu-item>
+
       <a-menu-item key="catelist">
         <a-icon type="book" />
-        <span>分类列表</span>
+        <span>标签列表</span>
       </a-menu-item>
 
       <a-menu-item key="userlist">
         <a-icon type="user" />
         <span>用户列表</span>
+      </a-menu-item>  
+
+      <a-menu-item key="logsystem">
+        <a-icon type="area-chart" />
+        <span>日志系统</span>
       </a-menu-item>
 
-      <!-- <a-menu-item key="profile">
-        <a-icon type="setting" />
-        <span>个人设置</span>
-      </a-menu-item> -->
     </a-menu>
   </a-layout-sider>
 </template>

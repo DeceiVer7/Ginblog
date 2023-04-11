@@ -144,7 +144,7 @@ const columns = [
     },
   },
   {
-    title: '角色',
+    title: '权限',
     dataIndex: 'role',
     width: '20%',
     key: 'role',

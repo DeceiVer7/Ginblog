@@ -16,7 +16,9 @@ import {
   Modal,
   Select,
   Switch,
-  Upload
+  Upload,
+  Calendar,
+  Progress
 } from 'ant-design-vue'
 
 message.config({
@@ -44,3 +46,5 @@ Vue.use(Modal)
 Vue.use(Select)
 Vue.use(Switch)
 Vue.use(Upload)
+Vue.use(Calendar)
+Vue.use(Progress)

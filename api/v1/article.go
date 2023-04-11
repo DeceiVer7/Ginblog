@@ -3,18 +3,19 @@ package v1
 import (
 	"ginblog/model"
 	"ginblog/utils/errmsg"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 // AddArticle 添加文章
 func AddArticle(c *gin.Context) {
 	var data model.Article
 	_ = c.ShouldBindJSON(&data)
-	
+
 	code := model.CreateArt(&data)
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    data,
@@ -27,20 +28,20 @@ func GetCateArt(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.Query("pagesize"))
 	pageNum, _ := strconv.Atoi(c.Query("pagenum"))
 	id, _ := strconv.Atoi(c.Param("id"))
-	
+
 	switch {
 	case pageSize >= 100:
 		pageSize = 100
 	case pageSize <= 0:
 		pageSize = 10
 	}
-	
+
 	if pageNum == 0 {
 		pageNum = 1
 	}
-	
+
 	data, code, total := model.GetCateArt(id, pageSize, pageNum)
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    data,
@@ -65,14 +66,14 @@ func GetArt(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.Query("pagesize"))
 	pageNum, _ := strconv.Atoi(c.Query("pagenum"))
 	title := c.Query("title")
-	
+
 	switch {
 	case pageSize >= 100:
 		pageSize = 100
 	case pageSize <= 0:
 		pageSize = 10
 	}
-	
+
 	if pageNum == 0 {
 		pageNum = 1
 	}
@@ -86,8 +87,8 @@ func GetArt(c *gin.Context) {
 		})
 		return
 	}
-	
-	data, code, total := model.SearchArticle(title,pageSize,pageNum)
+
+	data, code, total := model.SearchArticle(title, pageSize, pageNum)
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"data":    data,
@@ -96,14 +97,75 @@ func GetArt(c *gin.Context) {
 	})
 }
 
+// GetArtByAuthor 根据作者名称查询对应的文章列表
+func GetArtByAuthor(c *gin.Context) {
+	pageSize, _ := strconv.Atoi(c.Query("pagesize"))
+	pageNum, _ := strconv.Atoi(c.Query("pagenum"))
+	author := c.Query("author")
+
+	switch {
+	case pageSize >= 100:
+		pageSize = 100
+	case pageSize <= 0:
+		pageSize = 10
+	}
+
+	if pageNum == 0 {
+		pageNum = 1
+	}
+
+	data, code, total := model.GetArtByAuthor(pageSize, pageNum, author)
+	c.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"data":    data,
+		"total":   total,
+		"message": errmsg.GetErrMsg(code),
+	})
+}
+
+// func GetArtByAuthor(c *gin.Context) {
+// 	pageSize, _ := strconv.Atoi(c.Query("pagesize"))
+// 	pageNum, _ := strconv.Atoi(c.Query("pagenum"))
+// 	author := c.Query("author")
+
+// 	switch {
+// 	case pageSize >= 100:
+// 		pageSize = 100
+// 	case pageSize <= 0:
+// 		pageSize = 10
+// 	}
+
+// 	if pageNum == 0 {
+// 		pageNum = 1
+// 	}
+// 	if len(author) == 0 {
+// 		data, code, total := model.GetArtByAuthor(author, pageSize, pageNum)
+// 		c.JSON(http.StatusOK, gin.H{
+// 			"status":  code,
+// 			"data":    data,
+// 			"total":   total,
+// 			"message": errmsg.GetErrMsg(code),
+// 		})
+// 		return
+// 	}
+
+// 	data, code, total := model.SearchArticle(author, pageSize, pageNum)
+// 	c.JSON(http.StatusOK, gin.H{
+// 		"status":  code,
+// 		"data":    data,
+// 		"total":   total,
+// 		"message": errmsg.GetErrMsg(code),
+// 	})
+// }
+
 // EditArt 编辑文章
 func EditArt(c *gin.Context) {
 	var data model.Article
 	id, _ := strconv.Atoi(c.Param("id"))
 	_ = c.ShouldBindJSON(&data)
-	
+
 	code := model.EditArt(id, &data)
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"message": errmsg.GetErrMsg(code),
@@ -113,9 +175,9 @@ func EditArt(c *gin.Context) {
 // DeleteArt 删除文章
 func DeleteArt(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	
+
 	code := model.DeleteArt(id)
-	
+
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
 		"message": errmsg.GetErrMsg(code),

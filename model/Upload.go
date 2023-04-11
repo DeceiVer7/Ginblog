@@ -4,9 +4,10 @@ import (
 	"context"
 	"ginblog/utils"
 	"ginblog/utils/errmsg"
+	"mime/multipart"
+
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/storage"
-	"mime/multipart"
 )
 
 var AccessKey = utils.AccessKey
@@ -22,7 +23,7 @@ func UpLoadFile(file multipart.File, fileSize int64) (string, int) {
 	upToken := putPolicy.UploadToken(mac)
 
 	cfg := storage.Config{
-		Zone:          &storage.ZoneHuadong,
+		Zone:          &storage.ZoneHuanan,
 		UseCdnDomains: false,
 		UseHTTPS:      false,
 	}

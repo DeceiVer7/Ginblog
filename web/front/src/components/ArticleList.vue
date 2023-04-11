@@ -75,7 +75,7 @@ export default {
   methods: {
     // 获取文章列表
     async getArtList() {
-      const { data: res } = await this.$http.get('article', {
+      const { data: res } = await this.$http.get('articlefront', {
         params: {
           pagesize: this.queryParam.pagesize,
           pagenum: this.queryParam.pagenum
