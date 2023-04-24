@@ -3,12 +3,14 @@ package v1
 import (
 	"ginblog/model"
 	"ginblog/utils/errmsg"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
-func GetProfile(c *gin.Context)  {
+// 获取用户个人信息接口
+func GetProfile(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	data, code := model.GetProfile(id)
 	c.JSON(http.StatusOK, gin.H{
@@ -24,6 +26,15 @@ func UpdateProfile(c *gin.Context) {
 	_ = c.ShouldBindJSON(&data)
 
 	code := model.UpdateProfile(id, &data)
+	usercode := model.CheckUser(data.Username)
+	if usercode == errmsg.SUCCSE {
+		c.JSON(
+			http.StatusOK, gin.H{
+				"status":  usercode,
+				"message": errmsg.GetErrMsg(usercode),
+			},
+		)
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,

@@ -123,41 +123,6 @@ func GetArtByAuthor(c *gin.Context) {
 	})
 }
 
-// func GetArtByAuthor(c *gin.Context) {
-// 	pageSize, _ := strconv.Atoi(c.Query("pagesize"))
-// 	pageNum, _ := strconv.Atoi(c.Query("pagenum"))
-// 	author := c.Query("author")
-
-// 	switch {
-// 	case pageSize >= 100:
-// 		pageSize = 100
-// 	case pageSize <= 0:
-// 		pageSize = 10
-// 	}
-
-// 	if pageNum == 0 {
-// 		pageNum = 1
-// 	}
-// 	if len(author) == 0 {
-// 		data, code, total := model.GetArtByAuthor(author, pageSize, pageNum)
-// 		c.JSON(http.StatusOK, gin.H{
-// 			"status":  code,
-// 			"data":    data,
-// 			"total":   total,
-// 			"message": errmsg.GetErrMsg(code),
-// 		})
-// 		return
-// 	}
-
-// 	data, code, total := model.SearchArticle(author, pageSize, pageNum)
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"status":  code,
-// 		"data":    data,
-// 		"total":   total,
-// 		"message": errmsg.GetErrMsg(code),
-// 	})
-// }
-
 // EditArt 编辑文章
 func EditArt(c *gin.Context) {
 	var data model.Article
@@ -180,6 +145,142 @@ func DeleteArt(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status":  code,
+		"message": errmsg.GetErrMsg(code),
+	})
+}
+
+// 点赞文章数量增加
+func AddLikeCountAPI(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	code := model.AddLikeCount(id)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
+	})
+}
+
+// 点赞文章数量减少
+func CancelLikeCountAPI(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	code := model.CancelLikeCount(id)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
+	})
+}
+
+// 收藏文章数量增加
+func AddStarCountAPI(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	code := model.AddStarCount(id)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
+	})
+}
+
+// 收藏文章数量减少
+func CancelStarCountAPI(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	code := model.CancelStarCount(id)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"message": errmsg.GetErrMsg(code),
+	})
+}
+
+//获取点赞文章列表
+func GetLikedArticlesAPI(c *gin.Context) {
+	// 获取当前用户 ID
+
+	userID, _ := strconv.Atoi(c.Param("userid"))
+	pageSize, _ := strconv.Atoi(c.Query("pagesize"))
+	pageNum, _ := strconv.Atoi(c.Query("pagenum"))
+
+	switch {
+	case pageSize >= 100:
+		pageSize = 100
+	case pageSize <= 0:
+		pageSize = 10
+	}
+
+	if pageNum == 0 {
+		pageNum = 1
+	}
+
+	// 查询当前用户点赞的所有文章 ID
+	articleIDs, err := model.GetLikedArticleIDsByUserID(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get liked articles"})
+		return
+	}
+
+	// 查询对应的文章列表
+	data, code, total := model.GetArticlesByIDList(pageSize, pageNum, articleIDs)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  code,
+			"message": errmsg.GetErrMsg(code),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"data":    data,
+		"total":   total,
+		"message": errmsg.GetErrMsg(code),
+	})
+}
+
+//获取收藏文章列表
+func GetStarArticlesAPI(c *gin.Context) {
+	// 获取当前用户 ID
+
+	userID, _ := strconv.Atoi(c.Param("userid"))
+	pageSize, _ := strconv.Atoi(c.Query("pagesize"))
+	pageNum, _ := strconv.Atoi(c.Query("pagenum"))
+
+	switch {
+	case pageSize >= 100:
+		pageSize = 100
+	case pageSize <= 0:
+		pageSize = 10
+	}
+
+	if pageNum == 0 {
+		pageNum = 1
+	}
+
+	// 查询当前用户点赞的所有文章 ID
+	articleIDs, err := model.GetStarArticleIDsByUserID(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to get star articles"})
+		return
+	}
+
+	// 查询对应的文章列表
+	data, code, total := model.GetStarArticlesByIDList(pageSize, pageNum, articleIDs)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"status":  code,
+			"message": errmsg.GetErrMsg(code),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  code,
+		"data":    data,
+		"total":   total,
 		"message": errmsg.GetErrMsg(code),
 	})
 }

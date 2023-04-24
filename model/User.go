@@ -10,9 +10,10 @@ import (
 
 type User struct {
 	gorm.Model
-	Username string `gorm:"type:varchar(20);not null " json:"username" validate:"required,min=4,max=12" label:"用户名"`
-	Password string `gorm:"type:varchar(500);not null" json:"password" validate:"required,min=6,max=120" label:"密码"`
-	Role     int    `gorm:"type:int;DEFAULT:2" json:"role" validate:"required,gte=2" label:"角色码"`
+	Username string  `gorm:"type:varchar(20);not null " json:"username" validate:"required,min=4,max=12" label:"用户名"`
+	Password string  `gorm:"type:varchar(500);not null" json:"password" validate:"required,min=6,max=120" label:"密码"`
+	Role     int     `gorm:"type:int;DEFAULT:2" json:"role" validate:"required,gte=2" label:"角色码"`
+	Profile  Profile `gorm:"foreignKey:Username"`
 }
 
 // CheckUser 查询用户是否存在
@@ -45,6 +46,28 @@ func CreateUser(data *User) int {
 	if err != nil {
 		return errmsg.ERROR // 500
 	}
+	return errmsg.SUCCSE
+}
+
+//CreateUserWithProfile 新增用户的同时新增用户个人信息
+func CreateUserWithProfile(data *User, profile *Profile) int {
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	if err := tx.Create(&data).Error; err != nil {
+		tx.Rollback()
+		return errmsg.ERROR
+	}
+	profile.ID = int(data.ID)
+	profile.Username = data.Username
+	if err := tx.Create(&profile).Error; err != nil {
+		tx.Rollback()
+		return errmsg.ERROR
+	}
+	tx.Commit()
 	return errmsg.SUCCSE
 }
 

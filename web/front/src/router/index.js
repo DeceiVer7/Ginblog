@@ -15,6 +15,10 @@ const ArtList = () =>
   import(/* webpackChunkName: "group-artlist" */ '../components/ArtList.vue')
 const Profile = () =>
   import(/* webpackChunkName: "group-profile" */ '../components/Profile.vue')
+const LikeArtList = () =>
+  import(/* webpackChunkName: "group-profile" */ '../components/LikeArtList.vue')
+const StarArtList = () =>
+  import(/* webpackChunkName: "group-profile" */ '../components/StarArtList.vue')
 
 Vue.use(VueRouter)
 
@@ -69,7 +73,19 @@ const routes = [
     component: Profile,
     meta: { title: '个人信息' },
     props: true
-  }
+  },
+  {
+    path: '/likeartlist',
+    component: LikeArtList,
+    meta: { title: '点赞文章列表' },
+    props: true
+  },
+  {
+    path: '/starartlist',
+    component: StarArtList,
+    meta: { title: '点赞文章列表' },
+    props: true
+  },
 ]
 
 const router = new VueRouter({

@@ -4,15 +4,16 @@ import (
 	"ginblog/model"
 	"ginblog/utils/errmsg"
 	"ginblog/utils/validator"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-)
 
+	"github.com/gin-gonic/gin"
+)
 
 // AddUser 添加用户
 func AddUser(c *gin.Context) {
 	var data model.User
+	var profiledata model.Profile
 	var msg string
 	var validCode int
 	_ = c.ShouldBindJSON(&data)
@@ -31,7 +32,7 @@ func AddUser(c *gin.Context) {
 
 	code := model.CheckUser(data.Username)
 	if code == errmsg.SUCCSE {
-		model.CreateUser(&data)
+		model.CreateUserWithProfile(&data, &profiledata)
 	}
 
 	c.JSON(
@@ -114,7 +115,7 @@ func ChangeUserPassword(c *gin.Context) {
 	var data model.User
 	id, _ := strconv.Atoi(c.Param("id"))
 	_ = c.ShouldBindJSON(&data)
-	
+
 	code := model.ChangePassword(id, &data)
 
 	c.JSON(

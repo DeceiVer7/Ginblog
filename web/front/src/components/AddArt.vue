@@ -19,7 +19,7 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="8">
-            <!-- <a-form-model-item label="文章标签" prop="cid">
+            <a-form-model-item label="文章标签" prop="cid">
               <a-select style="width: 200px" v-model="artInfo.cid" placeholder="请选择标签"
                 @change="cateChange">
                 <a-select-option v-for="item in Catelist" :key="item.id" :value="item.id">
@@ -28,7 +28,7 @@
                   }}
                 </a-select-option>
               </a-select>
-            </a-form-model-item> -->
+            </a-form-model-item>
             <a-form-model-item label="文章缩略图" prop="img">
               <a-upload
                 listType="picture"
@@ -98,7 +98,7 @@ export default {
           { required: true, message: '请输入文章描述', trigger: 'change' },
           { max: 120, message: '描述最多可写120个字符', trigger: 'change' }
         ],
-        // img: [{ required: true, message: '请选择文章封面', trigger: 'change' }],
+        img: [{ required: true, message: '请选择文章封面', trigger: 'change' }],
         content: [
           { required: true, message: '请输入文章内容', trigger: 'change' }
         ]
@@ -165,7 +165,7 @@ export default {
             this.artInfo
           )
           if (res.status !== 200) return this.$message.error(res.message)
-          this.$router.push('/artlist')
+          this.$router.replace('/')
           this.$message.success('添加文章成功')
         } else {
           const { data: res } = await this.$http.put(
@@ -173,14 +173,14 @@ export default {
             this.artInfo
           )
           if (res.status !== 200) return this.$message.error(res.message)
-          this.$router.push('/artlist')
+          this.$router.replace('/')
           this.$message.success('更新文章成功')
         }
       })
     },
 
     addCancel() {
-      this.$router.push('/artlist')
+      this.$router.push('/')
     }
   }
 }

@@ -36,7 +36,6 @@
         </template>
 
         <v-list>
-            <!-- <v-list-item-title @click="$router.push('/artlist')">文章管理</v-list-item-title> -->
           <v-list-item link>
             <v-list-item-title
               @click="$router.push(`/artlist/${headers.username}`)"
@@ -49,8 +48,13 @@
             >
           </v-list-item>
           <v-list-item link>
-            <v-list-item-title @click="$router.push('/')"
+            <v-list-item-title @click="$router.push('/likeartlist')"
               >我的点赞</v-list-item-title
+            >
+          </v-list-item>
+          <v-list-item link>
+            <v-list-item-title @click="$router.push('/starartlist')"
+              >我的收藏</v-list-item-title
             >
           </v-list-item>
         </v-list>
@@ -76,7 +80,7 @@
             >请登录</v-btn
           >
           <v-btn v-if="headers.username" text dark
-            >欢迎你{{ headers.username }}</v-btn
+            >在线中</v-btn
           >
           <v-btn
             class="hidden-md-and-down"
@@ -266,7 +270,7 @@ export default {
       window.sessionStorage.setItem('token', res.token)
       this.$message.success('登录成功')
       setTimeout(() => {
-        this.$router.push('/')
+        this.$router.replace('/')
         this.$router.go(0)
       }, 300)
     },
@@ -277,12 +281,33 @@ export default {
       window.sessionStorage.clear('username')
       this.$message.success('退出成功')
       setTimeout(() => {
-        this.$router.push('/')
+        this.$router.replace('/')
         this.$router.go(0)
       }, 300)
     },
 
     // 注册
+    // async registerUser() {
+    //   if (!this.$refs.registerformRef.validate())
+    //     return this.$message.error('输入数据非法，请检查输入的用户名和密码')
+    //   const { data: res } = await this.$http.post('user/add', {
+    //     username: this.formdata.username,
+    //     password: this.formdata.password,
+    //     role: 2
+    //   })
+    //   if (res.status !== 200) return this.$message.error(res.message)
+    //   this.$message.success('注册成功！已为您自动登录')
+    //   this.$http.post('loginfront', this.formdata)
+    //   window.sessionStorage.setItem('username', res.data)
+    //   window.sessionStorage.setItem('user_id', res.id)
+    //   window.sessionStorage.setItem('token', res.token)
+    //   setTimeout(() => {
+    //     this.$message.success('登录成功')
+    //     this.$router.replace('/')
+    //     this.$router.go(0)
+    //   }, 300)
+    // }
+
     async registerUser() {
       if (!this.$refs.registerformRef.validate())
         return this.$message.error('输入数据非法，请检查输入的用户名和密码')
@@ -292,9 +317,9 @@ export default {
         role: 2
       })
       if (res.status !== 200) return this.$message.error(res.message)
-      this.$message.success('注册成功')
+      this.$message.success('注册成功！请登录')
       setTimeout(() => {
-        this.$router.push('/')
+        this.$router.replace('/')
         this.$router.go(0)
       }, 300)
     }

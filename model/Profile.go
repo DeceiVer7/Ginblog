@@ -18,6 +18,15 @@ type Profile struct {
 	IcpRecord string `gorm:"type:varchar(200)" json:"icp_record"`
 }
 
+//新增用户个人信息
+func CreateProfile(data *Profile) int {
+	err := db.Create(&data).Error
+	if err != nil {
+		return errmsg.ERROR // 500
+	}
+	return errmsg.SUCCSE
+}
+
 // GetProfile 获取个人信息设置
 func GetProfile(id int) (Profile, int) {
 	var profile Profile
@@ -26,6 +35,13 @@ func GetProfile(id int) (Profile, int) {
 		return profile, errmsg.ERROR
 	}
 	return profile, errmsg.SUCCSE
+}
+
+// CheckProfileUser 查询Profile表中用户是否存在
+func CheckProfileUser(name string) (code int) {
+	var profile Profile
+	db.Select("username").Where("username = ?", name).First(&profile)
+	return errmsg.SUCCSE
 }
 
 // UpdateProfile 更新个人信息设置

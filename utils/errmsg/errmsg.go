@@ -19,6 +19,20 @@ const (
 	// code= 3000... 分类模块的错误
 	ERROR_CATENAME_USED  = 3001
 	ERROR_CATE_NOT_EXIST = 3002
+
+	// code= 4000... 点赞模块的错误
+	ERROR_LIKE             = 4001
+	ERROR_CANCELLIKE       = 4002
+	ERROR_LIKE_COUNT       = 4003
+	ERROR_CANCELLIKE_COUNT = 4004
+	ERROR_LIKE_LIST        = 4005
+
+	// code= 5000... 点赞模块的错误
+	ERROR_STAR             = 5001
+	ERROR_CANCELSTAR       = 5002
+	ERROR_STAR_COUNT       = 5003
+	ERROR_CANCELSTAR_COUNT = 5004
+	ERROR_STAR_LIST        = 5005
 )
 
 var codeMsg = map[int]string{
@@ -37,6 +51,18 @@ var codeMsg = map[int]string{
 
 	ERROR_CATENAME_USED:  "该分类已存在",
 	ERROR_CATE_NOT_EXIST: "该分类不存在",
+
+	ERROR_LIKE:             "点赞失败",
+	ERROR_CANCELLIKE:       "取消点赞失败",
+	ERROR_LIKE_COUNT:       "点赞数量增加失败",
+	ERROR_CANCELLIKE_COUNT: "点赞数量减少失败",
+	ERROR_LIKE_LIST:        "点赞列表查询失败",
+
+	ERROR_STAR:             "收藏失败",
+	ERROR_CANCELSTAR:       "取消收藏失败",
+	ERROR_STAR_COUNT:       "收藏数量增加失败",
+	ERROR_CANCELSTAR_COUNT: "收藏数量减少失败",
+	ERROR_STAR_LIST:        "收藏列表查询失败",
 }
 
 func GetErrMsg(code int) string {

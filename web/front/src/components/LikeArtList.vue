@@ -14,9 +14,7 @@
       <v-col>
         <v-card-title>
           <v-chip color="pink" outlined label class="mr-3 white--text">
-            {{
-            item.Category.name
-            }}
+            {{ item.Category.name }}
           </v-chip>
           <div>{{ item.title }}</div>
         </v-card-title>
@@ -56,7 +54,7 @@
         total-visible="7"
         v-model="queryParam.pagenum"
         :length="Math.ceil(total / queryParam.pagesize)"
-        @input="getArtList()"
+        @input="getLikeArtList()"
       ></v-pagination>
     </div>
   </v-col>
@@ -78,13 +76,14 @@ export default {
   },
   created() {},
   mounted() {
-    this.getArtList()
+    this.getLikeArtList()
   },
   filters: {},
   methods: {
     // 获取文章列表
-    async getArtList() {
-      const { data: res } = await this.$http.get('articlefront', {
+    async getLikeArtList() {
+      this.userid = window.sessionStorage.getItem('user_id')
+      const { data: res } = await this.$http.get(`getlikelist/${this.userid}`, {
         params: {
           pagesize: this.queryParam.pagesize,
           pagenum: this.queryParam.pagenum

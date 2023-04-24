@@ -10,12 +10,28 @@
         }}</v-icon>
         <span>{{ artInfo.author }}</span>
       </div>
+
       <div class="d-flex mr-10 justify-center">
         <v-icon class="mr-1" color="indigo" small>
           {{ 'mdi-calendar-month' }}
         </v-icon>
         <span>{{ artInfo.CreatedAt | dateformat('YYYY-MM-DD') }}</span>
       </div>
+
+      <div class="d-flex mr-10 justify-center">
+        <v-icon class="mr-1" color="purple" small>
+          {{ 'mdi-thumb-up' }}
+        </v-icon>
+        <span>{{ artInfo.like_count }}</span>
+      </div>
+
+      <div class="d-flex mr-10 justify-center">
+        <v-icon class="mr-1" color="orange" small>
+          {{ 'mdi-star-circle' }}
+        </v-icon>
+        <span>{{ artInfo.star_count }}</span>
+      </div>
+
       <div class="d-flex mr-10 justify-center">
         <v-icon class="mr-1" color="pink" small>{{ 'mdi-comment' }}</v-icon>
         <span>{{ total }}</span>
@@ -39,6 +55,33 @@
     <div v-html="artInfo.content" class="content ma-5 pa-3 text-justify"></div>
 
     <v-divider class="ma-5"></v-divider>
+
+    <div v-if="headers.username" class="mx-4 d-flex justify-center align-center">
+      <v-btn
+        icon
+        color="pink"
+        :class="{
+          'grey--text': like.status === 0,
+          'orange--text': like.status === 1
+        }"
+        @click="toggleLiked()"
+      >
+        <v-icon>mdi-thumb-up</v-icon>
+      </v-btn>
+
+      <v-btn
+        icon
+        color="orange"
+        :class="{
+          'grey--text': star.status === 0,
+          'orange--text': star.status === 1
+        }"
+        @click="toggleStarred()"
+      >
+        <v-icon>mdi-star</v-icon>
+      </v-btn>
+    </div>
+
     <v-sheet class="ma-3 pa-3">
       <div>
         <v-list
@@ -81,7 +124,7 @@
               dense
               outlined
               type="error"
-              >你还未登录，请登录后留言</v-alert
+              >您还未登录，请登录后进行互动</v-alert
             >
             <div v-if="headers.username">
               <v-textarea
@@ -115,6 +158,8 @@ export default {
         content: ''
       },
       total: 0,
+      like: {},
+      star:{},
       headers: {
         username: '',
         user_id: 0
@@ -122,11 +167,14 @@ export default {
       queryParam: {
         pagesize: 5,
         pagenum: 1
-      }
+      },
+      userid: ''
     }
   },
   created() {
     this.getArtInfo()
+    this.getLikeStatus()
+    this.getStarStatus()
     this.getCommentList()
     this.headers = {
       username: window.sessionStorage.getItem('username'),
@@ -162,6 +210,59 @@ export default {
       if (res.status !== 200) return this.$message.error(res.message)
       this.$message.success('评论成功，待审核后显示')
       this.$router.go(0)
+    },
+
+    //获取点赞详情信息
+    async getLikeStatus() {
+      this.userid = window.sessionStorage.getItem('user_id')
+      const { data: res } = await this.$http.get(
+        `getlike/${this.userid}/${this.id}`
+      )
+      this.like = res.data
+      console.log(this.like)
+    },
+    //点赞数量以及状态变化
+    async toggleLiked() {
+      if (this.like.status === 0) {
+        const { data: res } = await this.$http.post('like', {
+          userid: parseInt(this.headers.user_id),
+          username: this.headers.username,
+          status: 1,
+          aid: parseInt(this.id)
+        })
+        this.like = res.data
+        await this.$http.put(`articlefront/like/${this.id}`)
+      } else if (this.like.status === 1) {
+        this.like.status = 0
+        await this.$http.delete(`deletelike/${this.userid}/${this.id}`)
+        await this.$http.put(`articlefront/cancellike/${this.id}`)
+      }
+    },
+    //获取收藏详情信息
+    async getStarStatus() {
+      this.userid = window.sessionStorage.getItem('user_id')
+      const { data: res } = await this.$http.get(
+        `getstar/${this.userid}/${this.id}`
+      )
+      this.star = res.data
+      console.log(this.star)
+    },
+    //收藏数量以及状态变化
+    async toggleStarred() {
+      if (this.star.status === 0) {
+        const { data: res } = await this.$http.post('star', {
+          userid: parseInt(this.headers.user_id),
+          username: this.headers.username,
+          status: 1,
+          aid: parseInt(this.id)
+        })
+        this.star = res.data
+        await this.$http.put(`articlefront/star/${this.id}`)
+      } else if (this.star.status === 1) {
+        this.star.status = 0
+        await this.$http.delete(`deletestar/${this.userid}/${this.id}`)
+        await this.$http.put(`articlefront/cancelstar/${this.id}`)
+      }
     }
   }
 }
@@ -172,6 +273,12 @@ img,
 span {
   width: auto;
   max-width: 100%;
+}
+.mx-4 {
+  margin: 0 auto;
+}
+.mx-4 > :last-child {
+  margin-right: 16px;
 }
 
 .content >>> pre,

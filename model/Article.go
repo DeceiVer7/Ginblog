@@ -15,6 +15,8 @@ type Article struct {
 	Desc         string `gorm:"type:varchar(200)" json:"desc"`
 	Content      string `gorm:"type:longtext" json:"content"`
 	Img          string `gorm:"type:varchar(100)" json:"img"`
+	LikeCount    int    `gorm:"type:int;not null;default:0" json:"like_count"`
+	StarCount    int    `gorm:"type:int;not null;default:0" json:"star_count"`
 	CommentCount int    `gorm:"type:int;not null;default:0" json:"comment_count"`
 	ReadCount    int    `gorm:"type:int;not null;default:0" json:"read_count"`
 }
@@ -59,7 +61,7 @@ func GetArt(pageSize int, pageNum int) ([]Article, int, int64) {
 	var err error
 	var total int64
 
-	err = db.Select("article.id, title, author, img, created_at, updated_at, `desc`, comment_count, read_count, category.name").Limit(pageSize).Offset((pageNum - 1) * pageSize).Order("Created_At DESC").Joins("Category").Find(&articleList).Error
+	err = db.Select("article.id, title, author, img, created_at, updated_at, `desc`, like_count, star_count, comment_count, read_count, category.name").Limit(pageSize).Offset((pageNum - 1) * pageSize).Order("Created_At DESC").Joins("Category").Find(&articleList).Error
 	// 单独计数
 	db.Model(&articleList).Count(&total)
 	if err != nil {
@@ -88,20 +90,22 @@ func GetArtByAuthor(pageSize int, pageNum int, author string) ([]Article, int, i
 	return articleListByAuthor, errmsg.SUCCSE, total
 }
 
-// func GetArtByAuthor(author string, pageSize int, pageNum int) ([]Article, int, int64) {
-// 	var articleListByAuthor []Article
+// GetArtByID 根据文章id查询文章列表
+// func GetArtByID(pageSize int, pageNum int, id int) ([]Article, int, int64) {
+// 	var articleListByID []Article
 // 	var err error
 // 	var total int64
 
-// 	err = db.Select("article.id, title, author, img, created_at, updated_at, `desc`, comment_count, read_count, category.name").Limit(pageSize).Offset((pageNum-1)*pageSize).Order("Created_At DESC").Joins("Category").Where("author LIKE ?",
-// 		author).Find(&articleListByAuthor).Error
-// 	// 单独计数
-// 	db.Model(&articleListByAuthor).Count(&total)
+// 	err = db.Select("article.id, title, author, img, created_at, updated_at, `desc`, comment_count, like_count,star_count").
+// 		Limit(pageSize).Offset((pageNum-1)*pageSize).Order("created_at DESC").
+// 		Where("id = ?", id).Find(&articleListByID).Error
+
+// 	db.Model(&Article{}).Where("id = ?", id).Count(&total)
+
 // 	if err != nil {
 // 		return nil, errmsg.ERROR, 0
 // 	}
-// 	return articleListByAuthor, errmsg.SUCCSE, total
-
+// 	return articleListByID, errmsg.SUCCSE, total
 // }
 
 // SearchArticle 搜索文章标题
@@ -145,6 +149,48 @@ func DeleteArt(id int) int {
 	var art Article
 	err = db.Where("id = ? ", id).Delete(&art).Error
 	if err != nil {
+		return errmsg.ERROR
+	}
+	return errmsg.SUCCSE
+}
+
+//点赞数量增加
+func AddLikeCount(id int) int {
+	err := db.Model(&Article{}).Where("id = ?", id).UpdateColumn("like_count", gorm.Expr("like_count + ?", 1)).Error
+	if err != nil {
+		return errmsg.ERROR_LIKE_COUNT
+	}
+	return errmsg.SUCCSE
+}
+
+//点赞数量减少
+func CancelLikeCount(id int) int {
+	err := db.Model(&Article{}).Where("id = ?", id).UpdateColumn("like_count", gorm.Expr("like_count - ?", 1)).Error
+	if err != nil {
+		return errmsg.ERROR_CANCELLIKE_COUNT
+	}
+	if db.RowsAffected == 0 {
+		return errmsg.ERROR
+	}
+	return errmsg.SUCCSE
+}
+
+//收藏数量增加
+func AddStarCount(id int) int {
+	err := db.Model(&Article{}).Where("id = ?", id).UpdateColumn("star_count", gorm.Expr("star_count + ?", 1)).Error
+	if err != nil {
+		return errmsg.ERROR_STAR_COUNT
+	}
+	return errmsg.SUCCSE
+}
+
+//收藏数量减少
+func CancelStarCount(id int) int {
+	err := db.Model(&Article{}).Where("id = ?", id).UpdateColumn("star_count", gorm.Expr("star_count - ?", 1)).Error
+	if err != nil {
+		return errmsg.ERROR_CANCELSTAR_COUNT
+	}
+	if db.RowsAffected == 0 {
 		return errmsg.ERROR
 	}
 	return errmsg.SUCCSE

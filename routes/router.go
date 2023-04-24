@@ -93,9 +93,28 @@ func InitRouter() {
 		router.GET("article/list/:id", v1.GetCateArt)
 		router.GET("article/info/:id", v1.GetArtInfo)
 
+		//文章点赞数量记录
+		router.PUT("articlefront/like/:id", v1.AddLikeCountAPI)
+		router.PUT("articlefront/cancellike/:id", v1.CancelLikeCountAPI)
+		//点赞详情信息
+		router.POST("like", v1.AddLikeRecordAPI)
+		router.DELETE("deletelike/:userid/:aid", v1.DeleteLikeRecordAPI)
+		router.GET("getlike/:userid/:aid", v1.GetLikeRecordsAPI)
+		//获取点赞文章列表
+		router.GET("getlikelist/:userid", v1.GetLikedArticlesAPI)
+
+		//文章收藏数量记录
+		router.PUT("articlefront/star/:id", v1.AddStarCountAPI)
+		router.PUT("articlefront/cancelstar/:id", v1.CancelStarCountAPI)
+		//收藏详情信息
+		router.POST("star", v1.AddStarRecordAPI)
+		router.DELETE("deletestar/:userid/:aid", v1.DeleteStarRecordAPI)
+		router.GET("getstar/:userid/:aid", v1.GetStarRecordsAPI)
+		//获取收藏文章列表
+		router.GET("getstarlist/:userid", v1.GetStarArticlesAPI)
+
 		// 文章列表功能迁移 测试--------------------------------------------------------
 
-		// router.GET("category", v1.GetCate)
 		// router.POST("category/add", v1.AddCategory)
 		// router.PUT("category/:id", v1.EditCate)
 
