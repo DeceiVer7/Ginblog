@@ -27,18 +27,10 @@
         <span slot="role" slot-scope="data">{{ data == 1 ? '管理员' : '订阅者' }}</span>
         <template slot="action" slot-scope="data">
           <div class="actionSlot">
-            <a-button
-              type="primary"
-              icon="edit"
-              style="margin-right: 15px"
-              @click="editUser(data.ID)"
-            >编辑</a-button>
-            <a-button
-              type="danger"
-              icon="delete"
-              style="margin-right: 15px"
-              @click="deleteUser(data.ID)"
-            >删除</a-button>
+            <a-button type="primary" icon="edit" style="margin-right: 15px" @click="editUser(data.ID)">编辑</a-button>
+            <a-button type="danger" icon="delete" style="margin-right: 15px" @click="deleteUser(data.ID)"
+              >删除</a-button
+            >
             <a-button type="info" icon="info" @click="ChangePassword(data.ID)">修改密码</a-button>
           </div>
         </template>
@@ -83,12 +75,7 @@
           <a-input v-model="userInfo.username"></a-input>
         </a-form-model-item>
         <a-form-model-item label="是否为管理员">
-          <a-switch
-            :checked="IsAdmin"
-            checked-children="是"
-            un-checked-children="否"
-            @change="adminChange"
-          />
+          <a-switch :checked="IsAdmin" checked-children="是" un-checked-children="否" @change="adminChange" />
         </a-form-model-item>
       </a-form-model>
     </a-modal>
@@ -328,6 +315,7 @@ export default {
   },
   created() {
     this.getUserList()
+    this.username = window.sessionStorage.getItem('username')
   },
   computed: {
     IsAdmin: function () {
@@ -415,6 +403,12 @@ export default {
           password: this.newUser.password,
           role: this.newUser.role,
         })
+        // 新增用户日志
+        var nowDate = new Date()
+        await this.$http.post('log', {
+          created_time: day(nowDate).format('YYYY年MM月DD日 HH:mm:ss'),
+          content: '管理员：' + this.username + '，新增了用户，' + '用户名为：' + this.newUser.username,
+        })
         if (res.status != 200) return this.$message.error(res.message)
         this.$refs.addUserRef.resetFields()
         this.addUserVisible = false
@@ -448,6 +442,12 @@ export default {
           username: this.userInfo.username,
           role: this.userInfo.role,
         })
+        // 编辑用户日志
+        var nowDate = new Date()
+        await this.$http.post('log', {
+          created_time: day(nowDate).format('YYYY年MM月DD日 HH:mm:ss'),
+          content: '管理员：' + this.username + '，编辑了用户，' + '新用户名为：' + this.userInfo.username,
+        })
         if (res.status != 200) return this.$message.error(res.message)
         this.editUserVisible = false
         this.$message.success('更新用户信息成功')
@@ -471,6 +471,12 @@ export default {
         if (!valid) return this.$message.error('参数不符合要求，请重新输入')
         const { data: res } = await this.$http.put(`admin/changepw/${this.changePassword.id}`, {
           password: this.changePassword.password,
+        })
+        // 修改用户密码
+        var nowDate = new Date()
+        await this.$http.post('log', {
+          created_time: day(nowDate).format('YYYY年MM月DD日 HH:mm:ss'),
+          content: '管理员：' + this.username + '，修改了用户密码，' + '被修改密码的用户名为：' + this.userInfo.username,
         })
         if (res.status != 200) return this.$message.error(res.message)
         this.changePasswordVisible = false

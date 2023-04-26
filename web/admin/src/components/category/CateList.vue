@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import day from 'dayjs'
 const columns = [
   {
     title: 'ID',
@@ -145,8 +146,18 @@ export default {
   },
   created() {
     this.getCateList()
+    this.username = window.sessionStorage.getItem('username')
   },
   methods: {
+    // 删除标签日志
+    async deleteCateLog(id) {
+      const { data: res } = await this.$http.get(`category/${id}`)
+          var nowDate = new Date();
+          this.$http.post('log', {
+          created_time: day(nowDate).format('YYYY年MM月DD日 HH:mm'),
+          content: '管理员：' + this.username + '，删除了标签，' + '标签名称为：' + res.data.name,
+        })
+    },
     // 获取标签列表
     async getCateList() {
       const { data: res } = await this.$http.get('admin/category', {
@@ -164,6 +175,7 @@ export default {
       this.Catelist = res.data
       this.pagination.total = res.total
     },
+
     // 更改分页
     handleTableChange(pagination, filters, sorter) {
       var pager = { ...this.pagination }
@@ -185,6 +197,8 @@ export default {
         title: '提示：请再次确认',
         content: '确定要删除该标签吗？一旦删除，无法恢复',
         onOk: async () => {
+          // 删除标签日志
+          this.deleteCateLog(id)
           const { data: res } = await this.$http.delete(`category/${id}`)
           if (res.status != 200) return this.$message.error(res.message)
           this.$message.success('删除成功')
@@ -202,11 +216,17 @@ export default {
         const { data: res } = await this.$http.post('category/add', {
           name: this.newCate.name,
         })
+        // 新增标签日志
+        var nowDate = new Date()
+        await this.$http.post('log', {
+          created_time: day(nowDate).format('YYYY年MM月DD日 HH:mm'),
+          content: '管理员：' + this.username + '，新增了标签，' + '标签名称为：' + this.newCate.name,
+        })
         if (res.status != 200) return this.$message.error(res.message)
         this.$refs.addCateRef.resetFields()
         this.addCateVisible = false
         this.$message.success('添加标签成功')
-        await this.getCateList()
+        this.getCateList()
       })
     },
     addCateCancel() {
@@ -231,6 +251,12 @@ export default {
         this.editCateVisible = false
         this.$message.success('更新标签信息成功')
         this.getCateList()
+        // 更新标签日志
+        var nowDate = new Date()
+        await this.$http.post('log', {
+          created_time: day(nowDate).format('YYYY年MM月DD日 HH:mm'),
+          content: '管理员：' + this.username + '，更新了标签，' + '标签名称为：' + this.CateInfo.name,
+        })
       })
     },
     editCateCancel() {

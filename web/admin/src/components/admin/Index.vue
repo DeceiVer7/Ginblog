@@ -5,7 +5,7 @@
 
     <div style="margin-top: 20px; font-size: 15px;">
       系统成功运行：
-      <a-progress type="circle" :percent="2" :format="percent => `${percent} Days`" />
+      <a-progress type="circle" :percent="1" :format="percent => `${percent} Days`" />
     </div>
 
   </div>

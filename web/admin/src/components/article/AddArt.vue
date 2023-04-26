@@ -61,6 +61,8 @@
 
 <script>
 import { Url } from '../../plugin/http'
+// import Dayjs from '../../plugin/dayjs'
+import day from 'dayjs'
 import Editor from '../editor/index'
 export default {
   components: { Editor },
@@ -81,6 +83,7 @@ export default {
       headers: {
         Authorization: ''
       },
+      username:'',
       fileList: [],
       artInfoRules: {
         title: [{ required: true, message: '请输入文章标题', trigger: 'change' }],
@@ -99,7 +102,8 @@ export default {
     this.headers = { 
       Authorization: `Bearer ${window.sessionStorage.getItem('token')}`,
     },
-    this.artInfo.author = window.sessionStorage.getItem('username') 
+    // this.artInfo.author = window.sessionStorage.getItem('username') 
+    this.username = window.sessionStorage.getItem('username')
     if (this.id) {
       this.getArtInfo(this.id)
     }
@@ -156,6 +160,12 @@ export default {
           if (res.status !== 200) return this.$message.error(res.message)
           this.$router.push('/artlist')
           this.$message.success('更新文章成功')
+          //更新文章日志
+          var nowDate = new Date();
+          await this.$http.post('log', {
+          created_time: day(nowDate).format('YYYY年MM月DD日 HH:mm'),
+          content: "管理员："+ this.username + "，更新了文章，" + "文章标题为：" + this.artInfo.title
+        })
         }
       })
     },

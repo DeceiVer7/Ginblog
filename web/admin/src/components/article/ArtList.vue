@@ -120,6 +120,7 @@ const columns = [
 ]
 
 export default {
+  props: ['id'],
   data() {
     return {
       pagination: {
@@ -132,6 +133,9 @@ export default {
       Artlist: [],
       Catelist: [],
       columns,
+      artInfo: {
+        title: '',
+      },
       queryParam: {
         title: '',
         pagesize: 5,
@@ -142,8 +146,19 @@ export default {
   created() {
     this.getArtList()
     this.getCateList()
+    this.username = window.sessionStorage.getItem('username')
   },
   methods: {
+    // 查询文章信息
+    async getArtInfo(id) {
+      const { data: res } = await this.$http.get(`admin/article/info/${id}`)
+      this.artInfo.title = res.data.title
+          var nowDate = new Date();
+          this.$http.post('log', {
+          created_time: day(nowDate).format('YYYY年MM月DD日 HH:mm'),
+          content: "管理员："+ this.username + "，删除了文章，" + "文章标题为：" + res.data.title
+        })
+    },
     // 获取文章列表
     async getArtList() {
       const { data: res } = await this.$http.get('admin/article', {
@@ -192,6 +207,8 @@ export default {
         title: '提示：请再次确认',
         content: '确定要删除该文章吗？一旦删除，无法恢复',
         onOk: async () => {
+          //删除文章日志
+          this.getArtInfo(id)
           const { data: res } = await this.$http.delete(`article/${id}`)
           if (res.status != 200) return this.$message.error(res.message)
           this.$message.success('删除成功')

@@ -98,6 +98,8 @@ export default {
     return {
       commentList: [],
       commentInfo: {
+        username:'',
+        content:'',
         status: 1,
       },
       pagination: {
@@ -116,8 +118,39 @@ export default {
   },
   created() {
     this.getCommentList()
+    this.username = window.sessionStorage.getItem('username')
   },
   methods: {
+    // 通过评论审核日志
+    async commentCheckLog(id) {
+      const { data: res } = await this.$http.get(`comment/info/${id}`)
+      this.commentInfo = res.data
+          var nowDate = new Date();
+          this.$http.post('log', {
+          created_time: day(nowDate).format('YYYY年MM月DD日 HH:mm'),
+          content: "管理员："+ this.username + "，通过了用户“ "+ res.data.username +" ”的评论，"+ "评论内容为：" + res.data.content
+        })
+    },
+    // 撤下评论日志
+    async commentUnCheckLog(id) {
+      const { data: res } = await this.$http.get(`comment/info/${id}`)
+      this.commentInfo = res.data
+          var nowDate = new Date();
+          this.$http.post('log', {
+          created_time: day(nowDate).format('YYYY年MM月DD日 HH:mm'),
+          content: "管理员："+ this.username + "，撤下了用户“ "+ res.data.username +" ”的评论，"+ "评论内容为：" + res.data.content
+        })
+    },
+    // 删除评论日志
+    async deleteCommentLog(id) {
+      const { data: res } = await this.$http.get(`comment/info/${id}`)
+      this.commentInfo = res.data
+          var nowDate = new Date();
+          this.$http.post('log', {
+          created_time: day(nowDate).format('YYYY年MM月DD日 HH:mm'),
+          content: "管理员："+ this.username + "，删除了用户“ "+ res.data.username +" ”的评论，"+ "评论内容为：" + res.data.content
+        })
+    },
     // 获取评论列表
     async getCommentList() {
       const { data: res } = await this.$http.get('comment/list', {
@@ -166,6 +199,7 @@ export default {
             status: 1,
           })
           if (res.status != 200) return this.$message.error(res.message)
+          this.commentCheckLog(id)
           this.$message.success('审核成功')
           this.getCommentList()
         },
@@ -187,6 +221,7 @@ export default {
             status: 2,
           })
           if (res.status != 200) return this.$message.error(res.message)
+          this.commentUnCheckLog(id)
           this.$message.success('评论已撤下')
           this.getCommentList()
         },
@@ -202,6 +237,7 @@ export default {
         title: '提示：请再次确认',
         content: '要删除吗？',
         onOk: async () => {
+          this.deleteCommentLog(id)
           const { data: res } = await this.$http.delete(`delcomment/${id}`)
           if (res.status != 200) return this.$message.error(res.message)
           this.$message.success('删除成功')

@@ -209,7 +209,9 @@ export default {
       })
       if (res.status !== 200) return this.$message.error(res.message)
       this.$message.success('评论成功，待审核后显示')
-      this.$router.go(0)
+      setTimeout(() => {
+        this.$router.go(0)
+      }, 300)
     },
 
     //获取点赞详情信息

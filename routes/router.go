@@ -69,6 +69,10 @@ func InitRouter() {
 		auth.DELETE("delcomment/:id", v1.DeleteComment)
 		auth.PUT("checkcomment/:id", v1.CheckComment)
 		auth.PUT("uncheckcomment/:id", v1.UncheckComment)
+		//日志系统
+		auth.POST("log", v1.AddLogAPI)
+		auth.GET("getlogs", v1.GetAllLogsAPI)
+		auth.DELETE("deletelogs", v1.DeleteAllLogsAPI)
 	}
 
 	/*
